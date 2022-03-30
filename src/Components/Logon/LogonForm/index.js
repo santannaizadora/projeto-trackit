@@ -62,9 +62,25 @@ export default function LogonForm(props) {
         setIsSubmitting(true);
         axios.post('https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/sign-up', formData)
             .then(res => {
-                localStorage.setItem('token', res.data.token);
+                toast.success('Usuário cadastrado, você será redirecionado para a tela de login', {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
                 setIsSubmitting(false);
-                navigation('/');
+                setFormData({
+                    email: '',
+                    name: '',
+                    image: '',
+                    password: ''
+                });
+                setTimeout(() => {
+                    navigation('/');
+                }, 5000); 
             })
             .catch(err => {
                 toast.error(err.response.data.message, {
@@ -79,7 +95,7 @@ export default function LogonForm(props) {
                 setIsSubmitting(false);
             });
     }
-    
+
     return (
         <>
             <ToastContainer />
