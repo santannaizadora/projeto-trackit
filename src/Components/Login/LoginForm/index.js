@@ -4,6 +4,7 @@ import { ErrorMessage } from '@hookform/error-message';
 import { ThreeDots } from "react-loader-spinner";
 import styled from 'styled-components';
 import { ToastContainer, toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom'
 import 'react-toastify/dist/ReactToastify.css';
 
 const Form = styled.form`
@@ -47,6 +48,7 @@ export default function LoginForm(props) {
     const { register, formState: { errors }, handleSubmit } = useForm({
         criteriaMode: "all"
     });
+    const navigation = useNavigate();
 
     const handleChange = (e) => {
         setFormData({
@@ -61,6 +63,7 @@ export default function LoginForm(props) {
             .then(res => {
                 localStorage.setItem('token', res.data.token);
                 setIsSubmitting(false);
+                navigation('/hoje');
             })
             .catch(err => {
                 toast.error(err.response.data.message, {
@@ -73,10 +76,9 @@ export default function LoginForm(props) {
                     progress: undefined,
                 });
                 setIsSubmitting(false);
-
             });
-
     }
+    
     return (
         <>
             <ToastContainer />

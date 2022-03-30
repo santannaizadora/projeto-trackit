@@ -11,7 +11,6 @@ const Container = styled.div`
     align-items: center;
     justify-content: center;
     height: 100vh;
-    width: 100vw;
 `
 const Logo = styled.img`
     width: 154.94px;

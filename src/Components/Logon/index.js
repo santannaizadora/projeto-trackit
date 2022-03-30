@@ -1,25 +1,38 @@
-//import React, { useState, useEffect } from 'react';
-//import { useForm } from 'react-hook-form';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import styled from 'styled-components';
 
+import LogoTrackIt from '../assets/img/logo-trackit.png';
+
+const Container = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+`
+const Logo = styled.img`
+    width: 154.94px;
+`
+const LogoText = styled.p`
+    font-family: 'Playball';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 68.982px;
+    line-height: 86px;
+    text-align: center;
+    color: #126BA5;
+`
 
 export default function Logon() {
-    /*const handleSubmit = (e) => {
-        e.preventDefault();
+    const [formData, setFormData] = useState({  
+        email: '',
+        name: '',
+        image: '',
+        password: ''
+    });
 
-        setIsSubmitting(true);
-        setErrorMessage('');
 
-        axios.post('http://localhost:5000/api/auth/login', formData)
-            .then(res => {
-                localStorage.setItem('token', res.data.token);
-                setIsSubmitting(false);
-                window.location.href = '/';
-            })
-            .catch(err => {
-                setErrorMessage(err.response.data.message);
-                setIsSubmitting(false);
-            });
-    }*/
 
     return (
         <div>
