@@ -54,7 +54,6 @@ const Container = createGlobalStyle`
     }
     `;
 export default function App() {
-    
     return (
         <>
             <BrowserRouter>
