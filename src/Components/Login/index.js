@@ -4,55 +4,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import LogoTrackIt from '../assets/img/logo-trackit.png';
 
-const InputsLogin = (props) => {
-    const { isSubmitting, formData, setFormData } = props;
-
-    const handleChange = (e) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value
-        });
-    }
-
-    const Input = styled.input`
-        width: 303px;
-        height: 45px;
-        background: #FFFFFF;
-        border: 1px solid #D5D5D5;
-        box-sizing: border-box;
-        border-radius: 5px;
-        padding: 0 10px;
-        margin-bottom: 6px;
-        font-size: 19.976px;
-    `
-
-
-    return (
-        <>
-            <Input
-                value={formData.email}
-                type="email"
-                placeholder="email"
-                name='email'
-                onChange={handleChange}
-                disabled={isSubmitting}
-            />
-            <Input
-                value={formData.password}
-                type="password"
-                placeholder="senha"
-                name='password'
-                onChange={handleChange}
-                disabled={isSubmitting}
-            />
-        </>
-    )
-}
-
-
-export default function Login() {
-
-    const Container = styled.div`
+const Container = styled.div`
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -101,6 +53,56 @@ export default function Login() {
         color: #FFFFFF;
         font-size: 20.976px;
 `
+const Input = styled.input`
+        width: 303px;
+        height: 45px;
+        background: #FFFFFF;
+        border: 1px solid #D5D5D5;
+        box-sizing: border-box;
+        border-radius: 5px;
+        padding: 0 10px;
+        margin-bottom: 6px;
+        font-size: 19.976px;
+    `
+
+const InputsLogin = (props) => {
+    const { isSubmitting, formData, setFormData } = props;
+
+    const handleChange = (e) => {
+        setFormData({
+            ...formData,
+            [e.target.name]: e.target.value
+        });
+    }
+
+    
+
+    return (
+        <>
+            <Input
+                value={formData.email}
+                type="email"
+                placeholder="email"
+                name='email'
+                onChange={handleChange}
+                disabled={isSubmitting}
+            />
+            <Input
+                value={formData.password}
+                type="password"
+                placeholder="senha"
+                name='password'
+                onChange={handleChange}
+                disabled={isSubmitting}
+            />
+        </>
+    )
+}
+
+
+export default function Login() {
+
+    
 
     const [formData, setFormData] = useState({
         email: '',

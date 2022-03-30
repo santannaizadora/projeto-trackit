@@ -3,9 +3,7 @@ import { createGlobalStyle } from 'styled-components'
 
 import Login from '../Login';
 import Logon from '../Logon';
-
-export default function App() {
-    const Container = createGlobalStyle`
+const Container = createGlobalStyle`
     html, body, div, span, applet, object, iframe,
     h1, h2, h3, h4, h5, h6, p, blockquote, pre,
     a, abbr, acronym, address, big, cite, code,
@@ -55,6 +53,8 @@ export default function App() {
         box-sizing: border-box;
     }
     `;
+export default function App() {
+    
     return (
         <>
             <BrowserRouter>
