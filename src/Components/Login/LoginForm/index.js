@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useForm } from "react-hook-form";
 import { ErrorMessage } from '@hookform/error-message';
-import {ThreeDots} from "react-loader-spinner";
+import { ThreeDots } from "react-loader-spinner";
 import styled from 'styled-components';
 
 const Form = styled.form`
@@ -10,7 +10,10 @@ const Form = styled.form`
     align-items: center;
     justify-content: center;
 `
-const Button = styled.input`
+const Button = styled.button`
+    display: flex;
+    align-items: center;
+    justify-content: center;
     width: 303px;
     height: 45px;    
     background: #52B6FF;
@@ -36,6 +39,7 @@ const Error = styled.p`
     font-size: 14px;
     padding-bottom: 10px;
 `
+
 export default function LoginForm(props) {
     const { isSubmitting, setIsSubmitting, formData, setFormData, errorMessage, setErrorMessage } = props;
     const { register, formState: { errors }, handleSubmit } = useForm({
@@ -117,12 +121,14 @@ export default function LoginForm(props) {
                 <Button
                     type="submit"
                     disabled={isSubmitting}
-                    value={isSubmitting
+                >
+                    {isSubmitting
                         ?
                         <ThreeDots color="#FFF" height={50} width={50} />
                         :
-                        'Entrar'}
-                />
+                        'Entrar'
+                    }
+                </Button>
             </Form>
         </>
     )

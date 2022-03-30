@@ -1,6 +1,8 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { createGlobalStyle } from 'styled-components';
 
+import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
+
 import Login from '../Login';
 import Logon from '../Logon';
 const Container = createGlobalStyle`
