@@ -1,5 +1,53 @@
+import axios from 'axios';
+import React, { useState } from 'react';
+
 import styled from 'styled-components';
 import LogoTrackIt from '../assets/img/logo-trackit.png';
+
+const InputsLogin = (props) => {
+    const { isSubmitting, formData, setFormData } = props;
+
+    const handleChange = (e) => {
+        setFormData({
+            ...formData,
+            [e.target.name]: e.target.value
+        });
+    }
+
+    const Input = styled.input`
+        width: 303px;
+        height: 45px;
+        background: #FFFFFF;
+        border: 1px solid #D5D5D5;
+        box-sizing: border-box;
+        border-radius: 5px;
+        padding: 0 10px;
+        margin-bottom: 6px;
+        font-size: 19.976px;
+    `
+
+
+    return (
+        <>
+            <Input
+                value={formData.email}
+                type="email"
+                placeholder="email"
+                name='email'
+                onChange={handleChange}
+                disabled={isSubmitting}
+            />
+            <Input
+                value={formData.password}
+                type="password"
+                placeholder="senha"
+                name='password'
+                onChange={handleChange}
+                disabled={isSubmitting}
+            />
+        </>
+    )
+}
 
 
 export default function Login() {
@@ -15,33 +63,7 @@ export default function Login() {
         width: 154.94px;
 
     `
-    const Form = styled.form`
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-    `
-    const Input = styled.input`
-        width: 303px;
-        height: 45px;
-        background: #FFFFFF;
-        border: 1px solid #D5D5D5;
-        box-sizing: border-box;
-        border-radius: 5px;
-        padding: 0 10px;
-        margin-bottom: 6px;
-        font-size: 19.976px;
-        color: #DBDBDB;
-    `
-    const Button = styled.button`
-        width: 303px;
-        height: 45px;    
-        background: #52B6FF;
-        border-radius: 4.63636px;
-        border: none;
-        color: #FFFFFF;
-        font-size: 20.976px;
-    `
+
     const LogoText = styled.p`
         font-family: 'Playball';
         font-style: normal;
@@ -63,16 +85,80 @@ export default function Login() {
         color: #52B6FF;
     `
 
+    const Form = styled.form`
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    `
+
+    const Button = styled.button`
+        width: 303px;
+        height: 45px;    
+        background: #52B6FF;
+        border-radius: 4.63636px;
+        border: none;
+        color: #FFFFFF;
+        font-size: 20.976px;
+`
+
+    const [formData, setFormData] = useState({
+        email: '',
+        password: ''
+    });
+
+    console.log(formData);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+
+        setIsSubmitting(true);
+        setErrorMessage('');
+
+        axios.post('https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/login', formData)
+            .then(res => {
+                localStorage.setItem('token', res.data.token);
+                setIsSubmitting(false);
+            })
+            .catch(err => {
+                setErrorMessage(err.response.data.message);
+                setIsSubmitting(false);
+
+            });
+
+    }
+    console.log(errorMessage)
+
+
     return (
         <Container>
             <Logo src={LogoTrackIt} alt="Logo" />
             <LogoText>TrackIt</LogoText>
             <Form>
-                <Input type="text" placeholder="email" autocomplete="on" />
-                <Input type="password" placeholder="senha" autocomplete="on" />
-                <Button type="submit">Entrar</Button>
+                <InputsLogin
+                    key='inputsLogin'
+                    isSubmitting={isSubmitting}
+                    formData={formData}
+                    setFormData={setFormData}
+                />
+                <Button
+                    type="submit"
+                    onClick={handleSubmit}
+                    disabled={isSubmitting}
+                >
+                    {isSubmitting
+                        ?
+                        'Carregando...'
+                        :
+                        'Entrar'}
+
+                </Button>
             </Form>
+
             <Logon>Não tem uma conta? Cadastre-se!</Logon>
         </Container>
     );
 }
+
