@@ -11,6 +11,7 @@ const Container = styled.div`
     align-items: center;
     justify-content: center;
     height: 100vh;
+    width: 100vw;
 `
 const Logo = styled.img`
     width: 154.94px;
@@ -21,7 +22,6 @@ const LogoText = styled.p`
     font-weight: 400;
     font-size: 68.982px;
     line-height: 86px;
-    margin-bottom: 20px;
     text-align: center;
     color: #126BA5;
 `
@@ -39,8 +39,8 @@ const Error = styled.p`
     color: #d11507;
     font-size: 14px;
     padding: 10px;
-    background-color: #ff9e81;
     margin-bottom: 10px;
+    background-color: ${props => props.errorMessage !==""? '#ff9e81': "transparent"};
 `
 export default function Login() {
     const [formData, setFormData] = useState({
@@ -56,7 +56,7 @@ export default function Login() {
         <Container>
             <Logo src={LogoTrackIt} alt="Logo" />
             <LogoText>TrackIt</LogoText>
-            <Error>{errorMessage}</Error>
+            <Error errorMessage={errorMessage}>{errorMessage}</Error>
                 <LoginForm
                     key='loginForm'
                     isSubmitting={isSubmitting}

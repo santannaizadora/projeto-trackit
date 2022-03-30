@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useForm } from "react-hook-form";
 import { ErrorMessage } from '@hookform/error-message';
-
+import {ThreeDots} from "react-loader-spinner";
 import styled from 'styled-components';
 
 const Form = styled.form`
@@ -18,11 +18,12 @@ const Button = styled.input`
     border: none;
     color: #FFFFFF;
     font-size: 20.976px;
+    opacity: ${props => !props.disabled ? 1 : 0.5};
 `
 const Input = styled.input`
     width: 303px;
     height: 45px;
-    background: #FFFFFF;
+    background:  ${props => !props.disabled ? '#FFFFFF' : '#F2F2F2'};
     border: 1px solid #D5D5D5;
     box-sizing: border-box;
     border-radius: 5px;
@@ -118,7 +119,7 @@ export default function LoginForm(props) {
                     disabled={isSubmitting}
                     value={isSubmitting
                         ?
-                        'Carregando...'
+                        <ThreeDots color="#FFF" height={50} width={50} />
                         :
                         'Entrar'}
                 />
