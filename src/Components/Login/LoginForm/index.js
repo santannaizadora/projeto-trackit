@@ -3,6 +3,8 @@ import { useForm } from "react-hook-form";
 import { ErrorMessage } from '@hookform/error-message';
 import { ThreeDots } from "react-loader-spinner";
 import styled from 'styled-components';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Form = styled.form`
     display: flex;
@@ -41,7 +43,7 @@ const Error = styled.p`
 `
 
 export default function LoginForm(props) {
-    const { isSubmitting, setIsSubmitting, formData, setFormData, errorMessage, setErrorMessage } = props;
+    const { isSubmitting, setIsSubmitting, formData, setFormData } = props;
     const { register, formState: { errors }, handleSubmit } = useForm({
         criteriaMode: "all"
     });
@@ -55,24 +57,29 @@ export default function LoginForm(props) {
 
     const onSubmit = () => {
         setIsSubmitting(true);
-        setErrorMessage('');
-
         axios.post('https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/login', formData)
             .then(res => {
                 localStorage.setItem('token', res.data.token);
                 setIsSubmitting(false);
             })
             .catch(err => {
-                setErrorMessage(err.response.data.message);
+                toast.error(err.response.data.message, {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
                 setIsSubmitting(false);
 
             });
 
     }
-    console.log(errorMessage)
-
     return (
         <>
+            <ToastContainer />
             <Form onSubmit={handleSubmit(onSubmit)}>
                 <Input
                     {...register("email", {

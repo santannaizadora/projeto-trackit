@@ -39,36 +39,23 @@ const Logon = styled.p`
         color: #52B6FF;
     }
 `
-const Error = styled.p`
-    color: #d11507;
-    font-size: 14px;
-    padding: 10px;
-    margin-bottom: 10px;
-    background-color: ${props => props.errorMessage !== "" ? '#ff9e81' : "transparent"};
-`
 export default function Login() {
     const [formData, setFormData] = useState({
         email: '',
         password: ''
     });
-
-    console.log(formData);
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [errorMessage, setErrorMessage] = useState('');
 
     return (
         <Container>
             <Logo src={LogoTrackIt} alt="Logo" />
             <LogoText>TrackIt</LogoText>
-            <Error errorMessage={errorMessage}>{errorMessage}</Error>
             <LoginForm
                 key='loginForm'
                 isSubmitting={isSubmitting}
                 formData={formData}
                 setFormData={setFormData}
                 setIsSubmitting={setIsSubmitting}
-                setErrorMessage={setErrorMessage}
-                errorMessage={errorMessage}
             />
             <Logon>
                 <Link to="/cadastro">
