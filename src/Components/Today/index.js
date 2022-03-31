@@ -1,29 +1,23 @@
+import Footer from "../Footer";
 import Header from "../Header";
+
+import styled from 'styled-components';
+
+const Container = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #F2F2F2;
+`
 
 export default function Today(){
     return(
-        <>
+        <Container>
             <Header/>
-            <div className="today">
-                <div className="today-content">
-                    <div className="today-content-left">
-                        <div className="today-content-left-top">
-                            <p>Hoje</p>
-                        </div>
-                        <div className="today-content-left-bottom">
-                            <p>13/04/2020</p>
-                        </div>
-                    </div>
-                    <div className="today-content-right">
-                        <div className="today-content-right-top">
-                            <p>Não há tarefas para hoje</p>
-                        </div>
-                        <div className="today-content-right-bottom">
-                            <p>Adicione uma tarefa</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </>
+
+            <Footer/>
+        </Container>
     )
 }
