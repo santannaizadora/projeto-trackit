@@ -5,7 +5,9 @@ import { ThreeDots } from "react-loader-spinner";
 import styled from 'styled-components';
 import { ToastContainer, toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom'
+import TokenContext from '../../../contexts/TokenContext';
 import 'react-toastify/dist/ReactToastify.css';
+import { useContext } from "react";
 
 const Form = styled.form`
     display: flex;
@@ -45,6 +47,7 @@ const Error = styled.p`
 
 export default function LoginForm(props) {
     const { isSubmitting, setIsSubmitting, formData, setFormData } = props;
+    const {token, setToken} = useContext(TokenContext);
     const { register, formState: { errors }, handleSubmit } = useForm({
         criteriaMode: "all"
     });
@@ -62,6 +65,7 @@ export default function LoginForm(props) {
         axios.post('https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/login', formData)
             .then(res => {
                 localStorage.setItem('token', res.data.token);
+                setToken(res.data.token);
                 setIsSubmitting(false);
                 navigation('/hoje');
             })
@@ -78,7 +82,7 @@ export default function LoginForm(props) {
                 setIsSubmitting(false);
             });
     }
-    
+
     return (
         <>
             <ToastContainer />

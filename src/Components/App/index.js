@@ -1,6 +1,8 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { createGlobalStyle } from 'styled-components';
+import { useState } from "react";
 
+import TokenContext from "../../contexts/TokenContext";
 import Login from '../Login';
 import Logon from '../Logon';
 const Container = createGlobalStyle`
@@ -54,8 +56,9 @@ const Container = createGlobalStyle`
     }
     `;
 export default function App() {
+    const [token, setToken] = useState("");
     return (
-        <>
+        <TokenContext.Provider value={{token, setToken}}>
             <BrowserRouter>
                 <Container />
                 <Routes>
@@ -63,6 +66,6 @@ export default function App() {
                     <Route path="/cadastro" element={<Logon />} />
                 </Routes>
             </BrowserRouter>
-        </>
+        </TokenContext.Provider>
     );
 }
