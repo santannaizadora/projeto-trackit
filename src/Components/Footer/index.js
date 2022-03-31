@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { CircularProgressbar } from 'react-circular-progressbar';
+import { Link } from 'react-router-dom'
 import 'react-circular-progressbar/dist/styles.css';
 
 const FooterContainer = styled.footer`
@@ -14,8 +15,12 @@ const FooterContainer = styled.footer`
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.15);
     z-index: 100;
     padding: 0 31px;
-    color: #52B6FF;
     font-size: 18px;
+
+    a {
+        color: #52B6FF;
+        text-decoration: none;
+    }
 `
 const FooterProgressContainer = styled.div`
     margin-bottom: 40px;
@@ -41,22 +46,26 @@ const FooterProgress = styled.div`
 export default function Footer() {
     const percentage = 66;
 
-
     return (
         <FooterContainer>
-            <p>Hábitos</p>
+            <Link to="/habitos">
+                <p>Hábitos</p>
+            </Link>
             <FooterProgressContainer>
-                <FooterProgress>
-                    <CircularProgressbar
-                        value={percentage}
-                        text='Hoje'
-                        background='#52B6FF'
-                        backgroundPadding={6}
-                    />
-                </FooterProgress>
+                <Link to="/hoje">
+                    <FooterProgress>
+                        <CircularProgressbar
+                            value={percentage}
+                            text='Hoje'
+                            background='#52B6FF'
+                            backgroundPadding={6}
+                        />
+                    </FooterProgress>
+                </Link>
             </FooterProgressContainer>
-
-            <p>Histórico</p>
+            <Link to="/historico">
+                <p>Histórico</p>
+            </Link>
 
         </FooterContainer>
     )
