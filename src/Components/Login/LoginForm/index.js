@@ -1,13 +1,18 @@
-import axios from 'axios';
+import { useContext } from "react";
+import { useNavigate } from 'react-router-dom'
 import { useForm } from "react-hook-form";
 import { ErrorMessage } from '@hookform/error-message';
-import { ThreeDots } from "react-loader-spinner";
-import styled from 'styled-components';
 import { ToastContainer, toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom'
+import { ThreeDots } from "react-loader-spinner";
+
+import axios from 'axios';
+import styled from 'styled-components';
+
 import TokenContext from '../../../contexts/TokenContext';
+import UserContext from '../../../contexts/UserContext';
+
 import 'react-toastify/dist/ReactToastify.css';
-import { useContext } from "react";
+
 
 const Form = styled.form`
     display: flex;
@@ -47,7 +52,8 @@ const Error = styled.p`
 
 export default function LoginForm(props) {
     const { isSubmitting, setIsSubmitting, formData, setFormData } = props;
-    const {token, setToken} = useContext(TokenContext);
+    const { setToken } = useContext(TokenContext);
+    const { setUser } = useContext(UserContext);
     const { register, formState: { errors }, handleSubmit } = useForm({
         criteriaMode: "all"
     });
@@ -64,8 +70,18 @@ export default function LoginForm(props) {
         setIsSubmitting(true);
         axios.post('https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/login', formData)
             .then(res => {
+                const data = { 
+                    name: res.data.name,
+                    image: res.data.image
+                };
+                const userInfo = JSON.stringify(data);
                 localStorage.setItem('token', res.data.token);
+                localStorage.setItem('userInfos', userInfo);
                 setToken(res.data.token);
+                setUser({
+                    name: res.data.name,
+                    image: res.data.image
+                });
                 setIsSubmitting(false);
                 navigation('/hoje');
             })

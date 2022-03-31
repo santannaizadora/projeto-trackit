@@ -3,8 +3,11 @@ import { createGlobalStyle } from 'styled-components';
 import { useState } from "react";
 
 import TokenContext from "../../contexts/TokenContext";
+import UserContext from "../../contexts/UserContext";
 import Login from '../Login';
 import Logon from '../Logon';
+import Today from "../Today";
+
 const Container = createGlobalStyle`
     html, body, div, span, applet, object, iframe,
     h1, h2, h3, h4, h5, h6, p, blockquote, pre,
@@ -57,15 +60,22 @@ const Container = createGlobalStyle`
     `;
 export default function App() {
     const [token, setToken] = useState("");
+    const [user, setUser] = useState({
+        name: "",
+        image: ""
+    });
     return (
-        <TokenContext.Provider value={{token, setToken}}>
-            <BrowserRouter>
-                <Container />
-                <Routes>
-                    <Route path="/" element={<Login />} />
-                    <Route path="/cadastro" element={<Logon />} />
-                </Routes>
-            </BrowserRouter>
+        <TokenContext.Provider value={{ token, setToken }}>
+            <UserContext.Provider value={{ user, setUser }}>
+                <BrowserRouter>
+                    <Container />
+                    <Routes>
+                        <Route path="/" element={<Login />} />
+                        <Route path="/cadastro" element={<Logon />} />
+                        <Route path="/hoje" element={<Today />} />
+                    </Routes>
+                </BrowserRouter>
+            </UserContext.Provider>
         </TokenContext.Provider>
     );
 }

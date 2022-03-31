@@ -172,6 +172,7 @@ export default function LogonForm(props) {
                     {...register("image", {
                         required: "O campo imagem é obrigatório",
                         pattern: {
+                            /* eslint-disable-next-line */
                             value: /(http[s]*:\/\/)([a-z\-_0-9\/.]+)\.([a-z.]{2,3})\/([a-z0-9\-_\/._~:?#\[\]@!$&'()*+,;=%]*)([a-z0-9]+\.)(jpg|jpeg|png|gif)/i,
                             message: "Insira uma URL válida (jpg, jpeg, png, gif)"
                         }
