@@ -76,8 +76,18 @@ const today = dayjs().locale("pt-br").format("dddd, DD/MM");
 
 export default function Today() {
     const [data, setData] = useState([]);
-    const {progress, setProgress} = useContext(ProgressContext);
+    const { progress, setProgress } = useContext(ProgressContext);
     const { token } = useContext(TokenContext);
+
+    useEffect(() => {
+        const calculateProgress = () => {
+            if (data.length !== 0) {
+                setProgress(data.filter(habit => habit.done).length / data.length * 100);
+            }
+        }
+        calculateProgress();
+    }, [data, setProgress]);
+
     useEffect(() => {
         axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/today", {
             headers: {
@@ -90,32 +100,23 @@ export default function Today() {
             .catch(error => {
                 console.log(error);
             })
-            calculateProgress();
     }, [token]);
 
-    const calculateProgress = () => {
-        if(data.length !== 0){
-            setProgress( data.filter(habit => habit.done).length / data.length * 100);
-        }
-    }
-
-    console.log(data);
-    
+    console.log(progress)
 
     const handleClickDone = (id) => {
-        axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}/check`,{}, {
+        axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}/check`, {}, {
             headers: {
                 "Authorization": "Bearer " + token
             }
         })
-            .then(response => {
+            .then(() => {
                 setData(data.map(habit => habit.id === id ? { ...habit, done: !habit.done } : habit));
-                
+
             })
             .catch(error => {
                 console.log(error);
             })
-            calculateProgress();
     }
 
     const handleClickUndone = (id) => {
@@ -126,14 +127,15 @@ export default function Today() {
         })
             .then(() => {
                 setData(data.map(habit => habit.id === id ? { ...habit, done: !habit.done } : habit));
+
+
             })
             .catch(error => {
                 console.log(error);
             })
-            calculateProgress();
     }
 
-console.log(progress)
+    console.log(progress)
     return (
         <>
             <Header />

@@ -59,6 +59,7 @@ const Container = createGlobalStyle`
         box-sizing: border-box;
     }
     `;
+
 export default function App() {
     const [token, setToken] = useState("");
     const [user, setUser] = useState({
@@ -66,7 +67,7 @@ export default function App() {
         image: ""
     });
     const [progress, setProgress] = useState(0);
-
+    
     if (token === "" && localStorage.getItem("token") !== null) {
         setToken(localStorage.getItem("token"));
     }
