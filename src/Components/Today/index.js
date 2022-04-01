@@ -8,8 +8,10 @@ import { useEffect, useState, useContext } from "react";
 import { Link } from "react-router-dom";
 
 import TokenContext from '../../contexts/TokenContext';
+import ProgressContext from '../../contexts/ProgressContext';
 import Footer from "../Footer";
 import Header from "../Header";
+
 
 const Container = styled.div`
     display: flex;
@@ -74,7 +76,7 @@ const today = dayjs().locale("pt-br").format("dddd, DD/MM");
 
 export default function Today() {
     const [data, setData] = useState([]);
-    const [progress, setProgress] = useState(0);
+    const {progress, setProgress} = useContext(ProgressContext);
     const { token } = useContext(TokenContext);
     useEffect(() => {
         axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/today", {
@@ -88,8 +90,50 @@ export default function Today() {
             .catch(error => {
                 console.log(error);
             })
+            calculateProgress();
     }, [token]);
 
+    const calculateProgress = () => {
+        if(data.length !== 0){
+            setProgress( data.filter(habit => habit.done).length / data.length * 100);
+        }
+    }
+
+    console.log(data);
+    
+
+    const handleClickDone = (id) => {
+        axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}/check`,{}, {
+            headers: {
+                "Authorization": "Bearer " + token
+            }
+        })
+            .then(response => {
+                setData(data.map(habit => habit.id === id ? { ...habit, done: !habit.done } : habit));
+                
+            })
+            .catch(error => {
+                console.log(error);
+            })
+            calculateProgress();
+    }
+
+    const handleClickUndone = (id) => {
+        axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}/uncheck`, {}, {
+            headers: {
+                "Authorization": "Bearer " + token
+            }
+        })
+            .then(() => {
+                setData(data.map(habit => habit.id === id ? { ...habit, done: !habit.done } : habit));
+            })
+            .catch(error => {
+                console.log(error);
+            })
+            calculateProgress();
+    }
+
+console.log(progress)
     return (
         <>
             <Header />
@@ -121,7 +165,9 @@ export default function Today() {
                                             <p>Sequencia atual: {habit.currentSequence} dias</p>
                                             <p>Seu recorde: {habit.highestSequence} dias</p>
                                         </div>
-                                        <div>
+                                        <div onClick={
+                                            habit.done ? () => handleClickUndone(habit.id) : () => handleClickDone(habit.id)
+                                        }>
                                             <ion-icon name="checkbox"></ion-icon>
                                         </div>
                                     </HabitContainer>

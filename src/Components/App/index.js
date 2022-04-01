@@ -1,9 +1,10 @@
-import { BrowserRouter, Routes, Route} from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { createGlobalStyle } from 'styled-components';
 import { useState } from "react";
 
 import TokenContext from "../../contexts/TokenContext";
 import UserContext from "../../contexts/UserContext";
+import ProgressContext from "../../contexts/ProgressContext";
 import Login from '../Login';
 import Logon from '../Logon';
 import Today from "../Today";
@@ -64,6 +65,7 @@ export default function App() {
         name: "",
         image: ""
     });
+    const [progress, setProgress] = useState(0);
 
     if (token === "" && localStorage.getItem("token") !== null) {
         setToken(localStorage.getItem("token"));
@@ -76,7 +78,7 @@ export default function App() {
         });
     }
 
-    if(user.image === "" && localStorage.getItem("user") !== null) {
+    if (user.image === "" && localStorage.getItem("user") !== null) {
         setUser({
             ...user,
             image: JSON.parse(localStorage.getItem("user")).image
@@ -86,14 +88,16 @@ export default function App() {
     return (
         <TokenContext.Provider value={{ token, setToken }}>
             <UserContext.Provider value={{ user, setUser }}>
-                <BrowserRouter>
-                    <Container />
-                    <Routes>
-                        <Route path="/" element={<Login />} />
-                        <Route path="/cadastro" element={<Logon />} />
-                        <Route path="/hoje" element={<Today />} />
-                    </Routes>
-                </BrowserRouter>
+                <ProgressContext.Provider value={{progress, setProgress}}>
+                    <BrowserRouter>
+                        <Container />
+                        <Routes>
+                            <Route path="/" element={<Login />} />
+                            <Route path="/cadastro" element={<Logon />} />
+                            <Route path="/hoje" element={<Today />} />
+                        </Routes>
+                    </BrowserRouter>
+                </ProgressContext.Provider>
             </UserContext.Provider>
         </TokenContext.Provider>
     );
