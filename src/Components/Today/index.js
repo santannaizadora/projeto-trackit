@@ -168,7 +168,7 @@ export default function Today() {
                                     `${progress}% dos hábitos concluídos`
                             }
                         </h2>
-                        {data.length > 0 ? (
+                        {data.length > 0 && (
                             <>
                                 {data.map(habit => (
                                     <HabitContainer key={habit.id} done={habit.done}>
@@ -188,8 +188,6 @@ export default function Today() {
                                     </HabitContainer>
                                 ))}
                             </>
-                        ) : (
-                            <h1>Não há nenhum hábito hoje</h1>
                         )}
                     </Container>
             }

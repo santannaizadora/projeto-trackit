@@ -72,17 +72,11 @@ export default function App() {
         setToken(localStorage.getItem("token"));
     }
 
-    if (user.name === "" && localStorage.getItem("user") !== null) {
+    if (user.name === "" && localStorage.getItem("userInfos") !== null) {
         setUser({
             ...user,
-            name: JSON.parse(localStorage.getItem("user")).name
-        });
-    }
-
-    if (user.image === "" && localStorage.getItem("user") !== null) {
-        setUser({
-            ...user,
-            image: JSON.parse(localStorage.getItem("user")).image
+            name: JSON.parse(localStorage.getItem("userInfos")).name,
+            image: JSON.parse(localStorage.getItem("userInfos")).image
         });
     }
 

@@ -42,8 +42,8 @@ export default function Header() {
                 <p>TrackIt</p>
             </LogoText>
             <UserInfo>
-                {name && <p>Olá, {name}</p>}
-                {image && <UserImage src={image} alt="User" />}
+                {name!=='' && <p>Olá, {name}</p>}
+                {image!=='' ? <UserImage src={image} alt="User"/>:<></>}
             </UserInfo>
         </HeaderContainer>
     )
