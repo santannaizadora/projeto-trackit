@@ -82,7 +82,7 @@ export default function Today() {
     useEffect(() => {
         const calculateProgress = () => {
             if (data.length !== 0) {
-                setProgress(data.filter(habit => habit.done).length / data.length * 100);
+                setProgress((data.filter(habit => habit.done).length / data.length * 100).toFixed(0));
             }
         }
         calculateProgress();
@@ -111,7 +111,10 @@ export default function Today() {
             }
         })
             .then(() => {
-                setData(data.map(habit => habit.id === id ? { ...habit, done: !habit.done } : habit));
+                setData(data.map(habit => habit.id === id ? { ...habit, 
+                    done: !habit.done,
+                    currentSequence: habit.currentSequence + 1
+                } : habit));
 
             })
             .catch(error => {
@@ -126,9 +129,10 @@ export default function Today() {
             }
         })
             .then(() => {
-                setData(data.map(habit => habit.id === id ? { ...habit, done: !habit.done } : habit));
-
-
+                setData(data.map(habit => habit.id === id ? { ...habit, 
+                    done: !habit.done,
+                    currentSequence: habit.currentSequence - 1
+                } : habit));
             })
             .catch(error => {
                 console.log(error);
@@ -151,7 +155,7 @@ export default function Today() {
                         <h1>{today}</h1>
                         <h2>
                             {
-                                progress === 0
+                                (progress === '0' || progress === 0)
                                     ?
                                     'Nenhum hábito concluído ainda'
                                     :
