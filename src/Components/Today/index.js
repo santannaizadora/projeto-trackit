@@ -65,13 +65,19 @@ const HabitContainer = styled.div`
 
     p{
         font-size: 12.976px;
-        color: #666666;
         margin-bottom: 3px;
     }
     ion-icon{
         font-size: 69px;
         color: ${props => props.done ? '#8FC549' : ' #EBEBEB'};
 `
+const CurrentSequence = styled.p`
+    color: ${props => props.done ? '#8FC549' : ' #666666'};
+`
+const HighestSequence = styled.p`
+    color: ${props => props.currentSequence === props.highestSequence ? '#8FC549' : ' #666666'};
+`
+
 const today = dayjs().locale("pt-br").format("dddd, DD/MM");
 
 export default function Today() {
@@ -102,8 +108,6 @@ export default function Today() {
             })
     }, [token]);
 
-    console.log(progress)
-
     const handleClickDone = (id) => {
         axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}/check`, {}, {
             headers: {
@@ -111,7 +115,8 @@ export default function Today() {
             }
         })
             .then(() => {
-                setData(data.map(habit => habit.id === id ? { ...habit, 
+                setData(data.map(habit => habit.id === id ? {
+                    ...habit,
                     done: !habit.done,
                     currentSequence: habit.currentSequence + 1
                 } : habit));
@@ -129,7 +134,8 @@ export default function Today() {
             }
         })
             .then(() => {
-                setData(data.map(habit => habit.id === id ? { ...habit, 
+                setData(data.map(habit => habit.id === id ? {
+                    ...habit,
                     done: !habit.done,
                     currentSequence: habit.currentSequence - 1
                 } : habit));
@@ -168,8 +174,11 @@ export default function Today() {
                                     <HabitContainer key={habit.id} done={habit.done}>
                                         <div>
                                             <h2>{habit.name}</h2>
-                                            <p>Sequencia atual: {habit.currentSequence} dias</p>
-                                            <p>Seu recorde: {habit.highestSequence} dias</p>
+                                            <CurrentSequence done={habit.done}>Sequencia atual: {habit.currentSequence} dias</CurrentSequence>
+                                            <HighestSequence
+                                                currentSequence={habit.currentSequence}
+                                                highestSequence={habit.highestSequence}
+                                            >Seu recorde: {habit.highestSequence} dias</HighestSequence>
                                         </div>
                                         <div onClick={
                                             habit.done ? () => handleClickUndone(habit.id) : () => handleClickDone(habit.id)
