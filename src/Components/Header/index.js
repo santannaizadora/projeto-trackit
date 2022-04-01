@@ -1,5 +1,8 @@
 import { useContext } from "react";
+import { useNavigate } from 'react-router-dom'
 import UserContext from "../../contexts/UserContext";
+import TokenContext from '../../contexts/TokenContext';
+
 import styled from 'styled-components';
 
 const HeaderContainer = styled.header`
@@ -31,10 +34,16 @@ const UserInfo = styled.div`
     align-items: center;
     color: #FFFFFF;
     font-size: 20px;
+
+    div{
+        text-align: right;
+    }
 `
 export default function Header() {
-    const { user } = useContext(UserContext);
+    const { user, setUser } = useContext(UserContext);
+    const { setToken } = useContext(TokenContext);
     const { image, name } = user;
+    const navigation = useNavigate();
 
     return (
         <HeaderContainer>
@@ -42,8 +51,30 @@ export default function Header() {
                 <p>TrackIt</p>
             </LogoText>
             <UserInfo>
-                {name!=='' && <p>Olá, {name}</p>}
-                {image!=='' ? <UserImage src={image} alt="User"/>:<></>}
+                <div>
+                    {name !== ''
+                        &&
+                        <>
+                            <p>Olá, {name}</p>
+                            <p
+                                onClick={() => {
+                                    let answer = window.confirm("Deseja realmente sair?");
+                                    if (answer) {
+                                        localStorage.removeItem("token");
+                                        localStorage.removeItem("userInfos");
+                                        setToken("");
+                                        setUser({
+                                            name: "",
+                                            image: ""
+                                        })
+                                        navigation("/");
+                                    }
+                                }}>Sair</p>
+                        </>
+                    }
+                </div>
+
+                {image !== '' ? <UserImage src={image} alt="User" /> : <></>}
             </UserInfo>
         </HeaderContainer>
     )
