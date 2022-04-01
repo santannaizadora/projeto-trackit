@@ -1,19 +1,21 @@
-import Footer from "../Footer";
-import Header from "../Header";
-
 import styled from 'styled-components';
+import axios from "axios";
 import dayjs from "dayjs";
 
-
 import "dayjs/locale/pt-br";
-import { useEffect, useState } from "react";
-import axios from "axios";
+
+import { useEffect, useState, useContext } from "react";
+import { Link } from "react-router-dom";
+
+import TokenContext from '../../contexts/TokenContext';
+import Footer from "../Footer";
+import Header from "../Header";
 
 const Container = styled.div`
     display: flex;
     flex-direction: column;
-    padding: 70px 20px;
-    height: 100vh;
+    padding: 70px 20px 120px 20px;
+    min-height: 100vh;
     background-color: #F2F2F2;
 
     h1{
@@ -24,6 +26,21 @@ const Container = styled.div`
     }
     h1:first-letter {
         text-transform: capitalize;
+    }
+`
+const NotLoggued = styled.div`
+    font-size: 17px;
+    padding: 70px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #52B6FF;
+    height: 100vh;
+
+    a{
+        color: #52B6FF;
     }
 `
 
@@ -53,16 +70,16 @@ const HabitContainer = styled.div`
         font-size: 69px;
         color: ${props => props.done ? '#8FC549' : ' #EBEBEB'};
 `
-
 const today = dayjs().locale("pt-br").format("dddd, DD/MM");
 
 export default function Today() {
     const [data, setData] = useState([]);
     const [progress, setProgress] = useState(0);
+    const { token } = useContext(TokenContext);
     useEffect(() => {
         axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/today", {
             headers: {
-                "Authorization": "Bearer " + localStorage.getItem("token")
+                "Authorization": "Bearer " + token
             }
         })
             .then(response => {
@@ -71,66 +88,50 @@ export default function Today() {
             .catch(error => {
                 console.log(error);
             })
-    }, []);
-
-    const mock = [
-        {
-            "id": 3,
-            "name": "Acordar",
-            "done": true,
-            "currentSequence": 1,
-            "highestSequence": 6
-        },
-        {
-            "id": 4,
-            "name": "Comer",
-            "done": true,
-            "currentSequence": 1,
-            "highestSequence": 0
-        },
-        {
-            "id": 5,
-            "name": "Dormir",
-            "done": false,
-            "currentSequence": 1,
-            "highestSequence": 5
-        }
-    ]
+    }, [token]);
 
     return (
         <>
             <Header />
-            <Container>
-                <h1>{today}</h1>
-                <h2>
-                    {
-                        progress === 0
-                            ?
-                            'Nenhum hábito concluído ainda'
-                            :
-                            `${progress}% dos hábitos concluídos`
-                    }
-                </h2>
-                {data.length === 0 ? (
-                    <>
-                        {mock.map(habit => (
-                            <HabitContainer key={habit.id} done={habit.done}>
-                                <div>
-                                    <h2>{habit.name}</h2>
-                                    <p>Sequencia atual: {habit.currentSequence} dias</p>
-                                    <p>Seu recorde: {habit.highestSequence} dias</p>
-                                </div>
-                                <div>
-                                    <ion-icon name="checkbox"></ion-icon>
-                                </div>
+            {
+                (token === '')
+                    ?
+                    <NotLoggued>
+                        <p>Nenhum usuário logado. Faça <Link to='/'>Login</Link> ou <Link to='/cadastro'>Cadastre-se</Link></p>
+                    </NotLoggued>
 
-                            </HabitContainer>
-                        ))}
-                    </>
-                ) : (
-                    <h1>Não há nenhum hábito hoje</h1>
-                )}
-            </Container>
+                    :
+                    <Container>
+                        <h1>{today}</h1>
+                        <h2>
+                            {
+                                progress === 0
+                                    ?
+                                    'Nenhum hábito concluído ainda'
+                                    :
+                                    `${progress}% dos hábitos concluídos`
+                            }
+                        </h2>
+                        {data.length > 0 ? (
+                            <>
+                                {data.map(habit => (
+                                    <HabitContainer key={habit.id} done={habit.done}>
+                                        <div>
+                                            <h2>{habit.name}</h2>
+                                            <p>Sequencia atual: {habit.currentSequence} dias</p>
+                                            <p>Seu recorde: {habit.highestSequence} dias</p>
+                                        </div>
+                                        <div>
+                                            <ion-icon name="checkbox"></ion-icon>
+                                        </div>
+                                    </HabitContainer>
+                                ))}
+                            </>
+                        ) : (
+                            <h1>Não há nenhum hábito hoje</h1>
+                        )}
+                    </Container>
+            }
             <Footer />
         </>
 

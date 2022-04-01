@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route} from "react-router-dom";
 import { createGlobalStyle } from 'styled-components';
 import { useState } from "react";
 
@@ -64,6 +64,25 @@ export default function App() {
         name: "",
         image: ""
     });
+
+    if (token === "" && localStorage.getItem("token") !== null) {
+        setToken(localStorage.getItem("token"));
+    }
+
+    if (user.name === "" && localStorage.getItem("user") !== null) {
+        setUser({
+            ...user,
+            name: JSON.parse(localStorage.getItem("user")).name
+        });
+    }
+
+    if(user.image === "" && localStorage.getItem("user") !== null) {
+        setUser({
+            ...user,
+            image: JSON.parse(localStorage.getItem("user")).image
+        });
+    }
+
     return (
         <TokenContext.Provider value={{ token, setToken }}>
             <UserContext.Provider value={{ user, setUser }}>

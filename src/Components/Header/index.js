@@ -36,20 +36,14 @@ export default function Header() {
     const { user } = useContext(UserContext);
     const { image, name } = user;
 
-    const userInfoStr = localStorage.getItem("userInfos");
-    const userInfo = JSON.parse(userInfoStr);
-
-    const profilePicture = image!== '' ? image : userInfo.image;
-    const userName = name!== '' ? name : userInfo.name;
-
     return (
         <HeaderContainer>
             <LogoText>
                 <p>TrackIt</p>
             </LogoText>
             <UserInfo>
-                <p>Olá, {userName}</p>
-                <UserImage src={profilePicture} alt="" />
+                {name && <p>Olá, {name}</p>}
+                {image && <UserImage src={image} alt="User" />}
             </UserInfo>
         </HeaderContainer>
     )

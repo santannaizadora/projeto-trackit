@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { useNavigate } from 'react-router-dom'
 import { useForm } from "react-hook-form";
 import { ErrorMessage } from '@hookform/error-message';
@@ -52,12 +52,18 @@ const Error = styled.p`
 
 export default function LoginForm(props) {
     const { isSubmitting, setIsSubmitting, formData, setFormData } = props;
-    const { setToken } = useContext(TokenContext);
+    const { token, setToken } = useContext(TokenContext);
     const { setUser } = useContext(UserContext);
     const { register, formState: { errors }, handleSubmit } = useForm({
         criteriaMode: "all"
     });
     const navigation = useNavigate();
+
+    useEffect(() => {
+    if (token !== "") {
+        navigation("/hoje");
+    }
+    }, [token, navigation]);
 
     const handleChange = (e) => {
         setFormData({
