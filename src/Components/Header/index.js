@@ -74,7 +74,7 @@ export default function Header() {
                     }
                 </div>
 
-                {image !== '' ? <UserImage src={image} alt="User" /> : <></>}
+                {image !== '' && <UserImage src={image} alt="User" /> }
             </UserInfo>
         </HeaderContainer>
     )
