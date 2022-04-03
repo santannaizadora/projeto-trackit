@@ -1,5 +1,6 @@
 import { useContext } from "react";
 import { useNavigate } from 'react-router-dom'
+import useDropdownMenu from 'react-accessible-dropdown-menu-hook';
 import UserContext from "../../contexts/UserContext";
 import TokenContext from '../../contexts/TokenContext';
 
@@ -39,44 +40,56 @@ const UserInfo = styled.div`
         text-align: right;
     }
 `
+const Button = styled.button`
+    display: flex;
+    background: transparent;
+    border: none;
+    color: #FFFFFF;
+    font-size: 20px;
+    cursor: pointer;
+`
 export default function Header() {
     const { user, setUser } = useContext(UserContext);
     const { setToken } = useContext(TokenContext);
     const { image, name } = user;
     const navigation = useNavigate();
+    const { buttonProps, itemProps, isOpen, setIsOpen } = useDropdownMenu(1);
 
-    return (
-        <HeaderContainer>
-            <LogoText>
-                <p>TrackIt</p>
-            </LogoText>
-            <UserInfo>
-                <div>
-                    {name !== ''
-                        &&
-                        <>
-                            <p>Olá, {name}</p>
-                            <p
-                                onClick={() => {
-                                    let answer = window.confirm("Deseja realmente sair?");
-                                    if (answer) {
-                                        localStorage.removeItem("token");
-                                        localStorage.removeItem("userInfos");
-                                        setToken("");
-                                        setUser({
-                                            name: "",
-                                            image: ""
-                                        })
-                                        navigation("/");
-                                    }
-                                }}>Sair</p>
-                        </>
-                    }
-                </div>
+    const handleLogout = () => {
+        let answer = window.confirm("Deseja realmente sair?");
+        if (answer) {
+            localStorage.removeItem("token");
+            localStorage.removeItem("userInfos");
+            setToken("");
+            setUser({
+                name: "",
+                image: ""
+            })
+            navigation("/");
+        }
+    }
 
-                {image !== '' && <UserImage src={image} alt="User" /> }
-            </UserInfo>
-        </HeaderContainer>
-    )
+            return (
+                <HeaderContainer>
+                    <LogoText>
+                        <p>TrackIt</p>
+                    </LogoText>
+                    <UserInfo>
+                        <div>
+                            {name !== ''
+                                &&
+                                <>
+                                    <Button {...buttonProps}>Olá, {name}</Button>
+                                    {(isOpen && <div role='menu'>
+                                        <a {...itemProps[0]} onClick={handleLogout}>Sair</a>
+                                    </div>)}
+                                </>
+                            }
+                        </div>
 
-}
+                        {image !== '' && <UserImage src={image} alt="User" />}
+                    </UserInfo>
+                </HeaderContainer>
+            )
+
+        }

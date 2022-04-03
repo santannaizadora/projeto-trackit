@@ -8,6 +8,8 @@ import ProgressContext from "../../contexts/ProgressContext";
 import Login from '../Login';
 import Logon from '../Logon';
 import Today from "../Today";
+import Habits from "../Habits";
+import Historic from "../Historic";
 
 const Container = createGlobalStyle`
     html, body, div, span, applet, object, iframe,
@@ -90,6 +92,8 @@ export default function App() {
                             <Route path="/" element={<Login />} />
                             <Route path="/cadastro" element={<Logon />} />
                             <Route path="/hoje" element={<Today />} />
+                            <Route path="/habitos" element={<Habits/>} />
+                            <Route path="/historico" element={<Historic />} />
                         </Routes>
                     </BrowserRouter>
                 </ProgressContext.Provider>
