@@ -66,7 +66,8 @@ export default function App() {
     const [token, setToken] = useState("");
     const [user, setUser] = useState({
         name: "",
-        image: ""
+        image: "",
+        habits: []
     });
     const [progress, setProgress] = useState(0);
     

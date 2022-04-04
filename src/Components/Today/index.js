@@ -118,6 +118,7 @@ export default function Today() {
                 setData(data.map(habit => habit.id === id ? {
                     ...habit,
                     done: !habit.done,
+                    highestSequence: habit.currentSequence === habit.highestSequence ? habit.highestSequence  + 1 : habit.currentSequence,
                     currentSequence: habit.currentSequence + 1
                 } : habit));
 
@@ -137,6 +138,7 @@ export default function Today() {
                 setData(data.map(habit => habit.id === id ? {
                     ...habit,
                     done: !habit.done,
+                    highestSequence: habit.currentSequence === habit.highestSequence ? habit.highestSequence  - 1 : habit.currentSequence,
                     currentSequence: habit.currentSequence - 1
                 } : habit));
             })
@@ -145,7 +147,6 @@ export default function Today() {
             })
     }
 
-    console.log(progress)
     return (
         <>
             <Header />

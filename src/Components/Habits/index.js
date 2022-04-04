@@ -216,7 +216,6 @@ export default function Habits() {
     });
     const [addHabit, setAddHabit] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
-    console.log(habit.days)
 
     const weekDays = [
         {
@@ -346,7 +345,7 @@ export default function Habits() {
                 });
         }
     }
-    console.log(habit)
+
     return (
         <>
             <Header />

@@ -84,8 +84,8 @@ export default function Historic() {
         let done = true;
         let habits = historic.filter(day => day.day === dayjs(date).format('DD/MM/YYYY'));
         if (habits.length > 0) {
-            habits.map(habit => {
-                habit.habits.map(habit => {
+            habits.forEach(habit => {
+                habit.habits.forEach(habit => {
                     if (!habit.done) {
                         done = false;
                     }
@@ -127,8 +127,6 @@ export default function Historic() {
             }]);
         }
     }
-
-    console.log(dayHistoric);
 
     return (
         <>
