@@ -42,6 +42,7 @@ const Title = styled.h1`
     color: #126BA5;
     padding-top: 28px;
     padding-bottom: 17px;
+    text-transform: capitalize;
 `
 const DayFormat = styled.div`
     display: flex;
@@ -53,6 +54,7 @@ const DayFormat = styled.div`
     border-radius: 50%;
     width: 40px;
     height: 40px;
+    margin: auto;
 `
 
 
@@ -108,6 +110,7 @@ export default function Historic() {
     const showHabits = (date) => {
         setDayHistoric([]);
         let day = []
+        let weekday = {}
         let habits = historic.filter(day => day.day === dayjs(date).format('DD/MM/YYYY'));
         if (habits.length > 0) {
             habits[0].habits.forEach(habit => {
@@ -115,10 +118,14 @@ export default function Historic() {
                         name: habit.name,
                         done: habit.done
                     })
+                    weekday.date = dayjs(date).locale('pt-br').format('dddd, DD/MM');
             }
             )
+            setDayHistoric([{
+                date: weekday.date,
+                habits: day
+            }]);
         }
-        setDayHistoric(day);
     }
 
     console.log(dayHistoric);
@@ -147,11 +154,32 @@ export default function Historic() {
                                     onClickDay={(date) => showHabits(date)}
                                 />
                         }
+                        {
+                            dayHistoric.length > 0
+                                &&
+                                <>
+                                        {
+                                            dayHistoric.map((day, index) => {
+                                                return (
+                                                    <div key={index}>
+                                                    <Title>{day.date}</Title>
+                                                    {
+                                                        day.habits.map((habit, index) => {
+                                                            return (
+                                                                <div key={index} >
+                                                                    <p>{habit.name}: {habit.done ? 'Feito' : 'Não feito'}</p>
+                                                                </div>
+                                                            )
+                                                        })
+                                                    }   
+                                                    </div>
+                                                )
+                                            })
+                                        }
+                                </>
+                        }
                     </HistoricContainer>
-
             }
-
-
             <Footer />
         </>
     )
