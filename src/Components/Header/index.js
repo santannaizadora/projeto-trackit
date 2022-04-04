@@ -1,8 +1,13 @@
 import { useContext } from "react";
 import { useNavigate } from 'react-router-dom'
-import useDropdownMenu from 'react-accessible-dropdown-menu-hook';
 import UserContext from "../../contexts/UserContext";
 import TokenContext from '../../contexts/TokenContext';
+import Dropdown from 'react-bootstrap/Dropdown';
+import DropdownItem from 'react-bootstrap/DropdownItem';
+import DropdownMenu from 'react-bootstrap/DropdownMenu';
+import DropdownToggle from 'react-bootstrap/DropdownToggle';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 
 import styled from 'styled-components';
 
@@ -36,24 +41,16 @@ const UserInfo = styled.div`
     color: #FFFFFF;
     font-size: 20px;
 
-    div{
-        text-align: right;
+    span {
+        color: #FFFFFF;
+        font-size: 20px;
     }
-`
-const Button = styled.button`
-    display: flex;
-    background: transparent;
-    border: none;
-    color: #FFFFFF;
-    font-size: 20px;
-    cursor: pointer;
 `
 export default function Header() {
     const { user, setUser } = useContext(UserContext);
     const { setToken } = useContext(TokenContext);
     const { image, name } = user;
     const navigation = useNavigate();
-    const { buttonProps, itemProps, isOpen, setIsOpen } = useDropdownMenu(1);
 
     const handleLogout = () => {
         let answer = window.confirm("Deseja realmente sair?");
@@ -69,27 +66,35 @@ export default function Header() {
         }
     }
 
-            return (
-                <HeaderContainer>
-                    <LogoText>
-                        <p>TrackIt</p>
-                    </LogoText>
-                    <UserInfo>
-                        <div>
-                            {name !== ''
-                                &&
-                                <>
-                                    <Button {...buttonProps}>Olá, {name}</Button>
-                                    {(isOpen && <div role='menu'>
-                                        <a {...itemProps[0]} onClick={handleLogout}>Sair</a>
-                                    </div>)}
-                                </>
-                            }
-                        </div>
+    return (
+        <HeaderContainer>
+            <LogoText>
+                <p>TrackIt</p>
+            </LogoText>
+            <UserInfo>
+                <div>
+                    {name !== ''
+                        &&
+                        <>
+                            <Dropdown>
+                                <DropdownToggle
+                                    variant="#126BA5"
+                                    id="dropdown-basic"
+                                >
+                                    <span>Olá, {name}</span>
+                                </DropdownToggle>
 
-                        {image !== '' && <UserImage src={image} alt="User" />}
-                    </UserInfo>
-                </HeaderContainer>
-            )
+                                <DropdownMenu>
+                                    <DropdownItem onClick={handleLogout}>Sair</DropdownItem>
+                                </DropdownMenu>
+                            </Dropdown>
+                        </>
+                    }
+                </div>
 
-        }
+                {image !== '' && <UserImage src={image} alt="User" />}
+            </UserInfo>
+        </HeaderContainer>
+    )
+
+}
