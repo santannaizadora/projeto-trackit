@@ -53,26 +53,27 @@ const DayFormat = styled.div`
     border-radius: 50%;
     width: 40px;
     height: 40px;
-`    
-    
+`
+
 
 export default function Historic() {
     const { token } = useContext(TokenContext);
     const [historic, setHistoric] = useState([]);
+    const [dayHistoric, setDayHistoric] = useState([]);
 
     useEffect(() => {
         if (token) {
             axios.get('https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/history/daily', {
                 headers: {
                     'Authorization': `Bearer ${token}`
-                    }
-                    })
-                    .then(res => {
-                        setHistoric(res.data);
-                    })
-                    .catch(err => {
-                        console.log(err);
-                    })
+                }
+            })
+                .then(res => {
+                    setHistoric(res.data);
+                })
+                .catch(err => {
+                    console.log(err);
+                })
         }
     }, [token])
 
@@ -88,10 +89,10 @@ export default function Historic() {
                     }
                 })
             })
-            
-            if(dayjs(date).format('DD/MM/YYYY') === dayjs().format('DD/MM/YYYY')){
+
+            if (dayjs(date).format('DD/MM/YYYY') === dayjs().format('DD/MM/YYYY')) {
                 color = 'transparent';
-            }else if (done) {
+            } else if (done) {
                 color = '228b22';
             } else if (!done) {
                 color = '#ff4040';
@@ -105,20 +106,22 @@ export default function Historic() {
     }
 
     const showHabits = (date) => {
+        setDayHistoric([]);
+        let day = []
         let habits = historic.filter(day => day.day === dayjs(date).format('DD/MM/YYYY'));
         if (habits.length > 0) {
-        habits[0].habits.map(habit => {
-            console.log(habit)
-                return (
-                    <div>
-                        <p>{habit.name}</p>
-                        <p>{habit.done ? 'Feito' : 'Não feito'}</p>
-                    </div>
-                )
+            habits[0].habits.forEach(habit => {
+                    day.push({
+                        name: habit.name,
+                        done: habit.done
+                    })
             }
             )
         }
+        setDayHistoric(day);
     }
+
+    console.log(dayHistoric);
 
     return (
         <>
