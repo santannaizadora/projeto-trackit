@@ -76,8 +76,6 @@ export default function Historic() {
         }
     }, [token])
 
-    console.log(historic);
-
     const format = (date) => {
         let color = 'transparent';
         let done = true;
@@ -106,6 +104,21 @@ export default function Historic() {
         )
     }
 
+    const showHabits = (date) => {
+        let habits = historic.filter(day => day.day === dayjs(date).format('DD/MM/YYYY'));
+        if (habits.length > 0) {
+        habits[0].habits.map(habit => {
+            console.log(habit)
+                return (
+                    <div>
+                        <p>{habit.name}</p>
+                        <p>{habit.done ? 'Feito' : 'Não feito'}</p>
+                    </div>
+                )
+            }
+            )
+        }
+    }
 
     return (
         <>
@@ -128,6 +141,7 @@ export default function Historic() {
                                 <Calendar
                                     calendarType="US"
                                     formatDay={(locale, date) => format(date)}
+                                    onClickDay={(date) => showHabits(date)}
                                 />
                         }
                     </HistoricContainer>
