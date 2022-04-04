@@ -6,7 +6,9 @@ import { useEffect, useState, useContext } from "react";
 import TokenContext from '../../contexts/TokenContext';
 import { Link } from "react-router-dom";
 import axios from "axios";
-
+import { useForm } from "react-hook-form";
+import { ErrorMessage } from '@hookform/error-message';
+import { ThreeDots } from "react-loader-spinner";
 
 const Container = styled.div`
     display: flex;
@@ -60,6 +62,7 @@ const NoHabits = styled.p`
     color: #666666;
 `
 const HabitContainer = styled.div`
+    position: relative;
     display: flex;
     flex-direction: column;
     padding : 13px 15px;
@@ -71,6 +74,14 @@ const HabitContainer = styled.div`
 
     h1{
         font-size: 19.976px;
+        color: #666666;
+    }
+
+    ion-icon{
+        font-size: 20px;
+        position: absolute;
+        right: 11px;
+        top: 10px;
         color: #666666;
     }
 `
@@ -93,14 +104,37 @@ const Days = styled.div`
         justify-content: center;S
     }
 `
-const Day = styled.p`
+const HabitForm = styled.form`
+    display: flex;
+    flex-direction: column;
+    width: 340px;
+    height: 180px;
+    background: #FFFFFF;
+    border-radius: 5px;
+    padding : 13px 15px;
+    margin-bottom: 30px;
+}
+`
+
+const DaySelected = styled.p`
     color: ${props => props.habitDay.some(day => day === props.day) ? '#FFFFFF' : '#CFCFCF'};
     background: ${props => props.habitDay.some(day => day === props.day) ? '#CFCFCF' : '#FFFFFF'};
 `
 
+
 export default function Habits() {
+    const { register, formState: { errors }, handleSubmit } = useForm({
+        criteriaMode: "all"
+    });
+
     const { token } = useContext(TokenContext);
     const [habits, setHabits] = useState([]);
+    const [habit, setHabit] = useState({
+        name: "",
+        days: []
+    });
+    const [addHabit, setAddHabit] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const weekDays = [
         {
@@ -149,6 +183,37 @@ export default function Habits() {
         }
     }, [token]);
 
+    const handleDelete = (id) => {
+        window.confirm("Deseja realmente excluir esse hábito?") && axios.delete(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+            .then(response => {
+                setHabits(habits.filter(habit => habit.id !== id));
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    }
+
+    const onSubmit = () => {
+        setIsSubmitting(true);
+        axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits`, habit, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+            .then(response => {
+                setHabits([...habits, response.data]);
+                setAddHabit(false);
+                setIsSubmitting(false);
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    }
+    console.log(habit)
     return (
         <>
             <Header />
@@ -158,14 +223,61 @@ export default function Habits() {
                     <NotLoggued>
                         <p>Nenhum usuário logado. Faça <Link to='/'>Login</Link> ou <Link to='/cadastro'>Cadastre-se</Link></p>
                     </NotLoggued>
-
                     :
                     <Container>
                         <AddHabit>
                             <h1>Meus hábitos</h1>
-                            <button>+</button>
+                            <button onClick={() => setAddHabit(true)}>+</button>
                         </AddHabit>
+                        {
+                            addHabit
+                            &&
+                            <HabitForm>
+                                <form onSubmit={handleSubmit(onSubmit)}>
+                                    <input
+                                        {...register("name", {
+                                            required: "O campo nome é obrigatório",
+                                            minLength: {
+                                                value: 5,
+                                                message: "Insira um nome válido"
+                                            }
+                                        })}
+                                        type="text"
+                                        placeholder="Nome do hábito"
+                                        onChange={(e) => setHabit({ ...habit, name: e.target.value })}
+                                    />
+                                    <Days>
+                                        {
+                                            weekDays.map(day => (
+                                                <p 
+                                                key={day.value} 
+                                                day={day.value} 
+                                                >
+                                                    {day.label}
+                                                </p>
+                                            ))
+                                        }
+                                    </Days>
 
+                                    <button onClick={() => setAddHabit(false)}>Cancelar</button>
+                                    <button type="submit" disabled={isSubmitting}>
+                                        {
+                                            isSubmitting
+                                                ?
+                                                <>
+                                                    <ThreeDots color="#FFF" height={50} width={50} />
+                                                </>
+                                                :
+                                                <>
+                                                    Salvar
+                                                </>
+                                        }
+                                    </button>
+                                </form>
+
+
+                            </HabitForm>
+                        }
                         <div>
                             {
                                 habits.length === 0
@@ -174,30 +286,22 @@ export default function Habits() {
                                     :
                                     habits.map(habit => (
                                         <HabitContainer key={habit.id}>
+                                            <ion-icon onClick={() => handleDelete(habit.id)} name="trash-outline"></ion-icon>
                                             <h1>{habit.name}</h1>
                                             <Days>
                                                 {
                                                     weekDays.map(day => (
-                                                        <Day habitDay={habit.days} day={day.value} key={day.value}>
+                                                        <DaySelected habitDay={habit.days} day={day.value} key={day.value}>
                                                             <p>{day.label}</p>
-                                                        </Day>
+                                                        </DaySelected>
                                                     ))
                                                 }
                                             </Days>
-                                            {/*habit.days.map(day => (
-                                                <div key={day}>
-                                                    <span>{weekDays[day].label}</span>
-                                                    <span>{day.value}</span>
-                                                </div>
-                                            ))*/}
-
                                         </HabitContainer>
                                     ))
                             }
                         </div>
-
                     </Container>
-
             }
             <Footer />
         </>
