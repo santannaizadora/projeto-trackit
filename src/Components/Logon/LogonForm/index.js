@@ -57,7 +57,6 @@ export default function LogonForm(props) {
         });
     }
 
-    console.log(formData);
     const onSubmit = () => {
         setIsSubmitting(true);
         axios.post('https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/sign-up', formData)
