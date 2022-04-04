@@ -9,6 +9,7 @@ import axios from "axios";
 import { useForm } from "react-hook-form";
 import { ErrorMessage } from '@hookform/error-message';
 import { ThreeDots } from "react-loader-spinner";
+import { ToastContainer, toast } from 'react-toastify';
 
 const Container = styled.div`
     display: flex;
@@ -104,7 +105,7 @@ const Days = styled.div`
         justify-content: center;S
     }
 `
-const HabitForm = styled.form`
+const HabitForm = styled.div`
     display: flex;
     flex-direction: column;
     width: 340px;
@@ -113,13 +114,93 @@ const HabitForm = styled.form`
     border-radius: 5px;
     padding : 13px 15px;
     margin-bottom: 30px;
-}
+    position: relative;
+    color: #666666;
+
+    input{
+        font-family: 'Lexend Deca';
+        width: 303px;
+        height: 45px;
+        background: #FFFFFF;
+        border: 1px solid #D5D5D5;
+        box-sizing: border-box;
+        border-radius: 5px;
+        font-size: 20px;
+    }
+
+    button{
+        font-family: 'Lexend Deca';
+        width: 84px;
+        height: 35px;
+        border-radius: 5px;
+        border: none;
+    }
 `
 
+const Buttons = styled.div`
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 200px;
+    padding-top: 10px;
+    position: absolute;
+    bottom: 15px;
+    right: 16px;
+`
+
+const Button = styled.button`
+    color: ${props => props.isSubmitButton ? "#FFFFFF" : "#52B6FF"};
+    background: ${props => props.isSubmitButton ? "#52B6FF" : "#FFFFFF"};
+    opacity: ${props => !props.disabled ? 1 : 0.5};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+`
+const Error = styled.p`
+    color: red;
+    font-size: 14px;
+    padding-top: 5px;
+`
 const DaySelected = styled.p`
     color: ${props => props.habitDay.some(day => day === props.day) ? '#FFFFFF' : '#CFCFCF'};
     background: ${props => props.habitDay.some(day => day === props.day) ? '#CFCFCF' : '#FFFFFF'};
 `
+const DayToSelect = styled.p`
+    color: ${props => props.days.some(day => day === props.day) ? '#FFFFFF' : '#CFCFCF'};
+    background: ${props => props.days.some(day => day === props.day) ? '#CFCFCF' : '#FFFFFF'};
+`
+
+const Input = styled.input`
+    background:  ${props => !props.disabled ? '#FFFFFF' : '#F2F2F2'};
+`
+const DaysToRequest = (props) => {
+    const [dayIsSelected, setDayIsSelected] = useState(false);
+    const { day, habit, setHabit, isSubmitting } = props
+    return (
+        <DayToSelect
+            day={day.value}
+            days={habit.days}
+            onClick={() => {
+                if (!isSubmitting) {
+                    setDayIsSelected(!dayIsSelected)
+                    if (!dayIsSelected) {
+                        setHabit({
+                            ...habit,
+                            days: [...habit.days, day.value]
+                        })
+                    } else {
+                        setHabit({
+                            ...habit,
+                            days: [...habit.days.filter(d => d !== day.value)]
+                        })
+                    }
+                }
+            }}
+        >{day.label}</DayToSelect>
+    )
+}
 
 
 export default function Habits() {
@@ -135,6 +216,7 @@ export default function Habits() {
     });
     const [addHabit, setAddHabit] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    console.log(habit.days)
 
     const weekDays = [
         {
@@ -189,34 +271,85 @@ export default function Habits() {
                 Authorization: `Bearer ${token}`
             }
         })
-            .then(response => {
+            .then(() => {
                 setHabits(habits.filter(habit => habit.id !== id));
+                toast.success('Habito deletado com sucesso!', {
+                    position: "top-right",
+                    autoClose: 2000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
             })
             .catch(error => {
-                console.log(error);
+                toast.error(error, {
+                    position: "top-right",
+                    autoClose: 2000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
             });
     }
 
     const onSubmit = () => {
         setIsSubmitting(true);
-        axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits`, habit, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        })
-            .then(response => {
-                setHabits([...habits, response.data]);
-                setAddHabit(false);
-                setIsSubmitting(false);
-            })
-            .catch(error => {
-                console.log(error);
+        if (habit.days.length === 0) {
+            setIsSubmitting(false);
+            toast.info('Selecione pelo menos um dia para criar o hábito!', {
+                position: "top-right",
+                autoClose: 1000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
             });
+        } else {
+            axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits`, habit, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+                .then(response => {
+                    setHabits([...habits, response.data]);
+                    setIsSubmitting(false);
+                    setHabit({
+                        name: "",
+                        days: []
+                    });
+                    toast.success('Habito criado com sucesso!', {
+                        position: "top-right",
+                        autoClose: 2000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    });
+                })
+                .catch(error => {
+                    toast.error(error, {
+                        position: "top-right",
+                        autoClose: 2000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    });
+                });
+        }
     }
     console.log(habit)
     return (
         <>
             <Header />
+            <ToastContainer />
             {
                 (token === '')
                     ?
@@ -234,45 +367,60 @@ export default function Habits() {
                             &&
                             <HabitForm>
                                 <form onSubmit={handleSubmit(onSubmit)}>
-                                    <input
+                                    <Input
                                         {...register("name", {
                                             required: "O campo nome é obrigatório",
                                             minLength: {
                                                 value: 5,
-                                                message: "Insira um nome válido"
+                                                message: "Insira um nome com pelo menos 5 caracteres"
                                             }
                                         })}
+                                        value={habit.name}
                                         type="text"
                                         placeholder="Nome do hábito"
                                         onChange={(e) => setHabit({ ...habit, name: e.target.value })}
+                                        disabled={isSubmitting}
+                                    />
+                                    <ErrorMessage
+                                        errors={errors}
+                                        name="name"
+                                        render={({ messages }) =>
+                                            messages &&
+                                            Object.entries(messages).map(([type, message]) => (
+                                                <Error className='error-message' key={type}>{message}</Error>
+                                            ))
+                                        }
                                     />
                                     <Days>
                                         {
                                             weekDays.map(day => (
-                                                <p 
-                                                key={day.value} 
-                                                day={day.value} 
-                                                >
-                                                    {day.label}
-                                                </p>
+                                                <DaysToRequest
+                                                    key={day.value}
+                                                    habit={habit}
+                                                    setHabit={setHabit}
+                                                    day={day}
+                                                    isSubmitting={isSubmitting}
+                                                />
                                             ))
                                         }
                                     </Days>
 
-                                    <button onClick={() => setAddHabit(false)}>Cancelar</button>
-                                    <button type="submit" disabled={isSubmitting}>
-                                        {
-                                            isSubmitting
-                                                ?
-                                                <>
-                                                    <ThreeDots color="#FFF" height={50} width={50} />
-                                                </>
-                                                :
-                                                <>
-                                                    Salvar
-                                                </>
-                                        }
-                                    </button>
+                                    <Buttons>
+                                        <Button isSubmitButton={false} onClick={() => setAddHabit(false)}>Cancelar</Button>
+                                        <Button isSubmitButton={true} type="submit" disabled={isSubmitting}>
+                                            {
+                                                isSubmitting
+                                                    ?
+                                                    <>
+                                                        <ThreeDots color="#FFF" height={50} width={50} />
+                                                    </>
+                                                    :
+                                                    <>
+                                                        Salvar
+                                                    </>
+                                            }
+                                        </Button>
+                                    </Buttons>
                                 </form>
 
 
@@ -292,7 +440,7 @@ export default function Habits() {
                                                 {
                                                     weekDays.map(day => (
                                                         <DaySelected habitDay={habit.days} day={day.value} key={day.value}>
-                                                            <p>{day.label}</p>
+                                                            {day.label}
                                                         </DaySelected>
                                                     ))
                                                 }
