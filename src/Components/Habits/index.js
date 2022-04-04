@@ -317,6 +317,7 @@ export default function Habits() {
             })
                 .then(response => {
                     setHabits([...habits, response.data]);
+                    setAddHabit(false);
                     setIsSubmitting(false);
                     setHabit({
                         name: "",

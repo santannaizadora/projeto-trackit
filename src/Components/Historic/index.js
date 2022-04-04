@@ -1,11 +1,14 @@
 import styled from "styled-components"
 import Header from "../Header"
 import Footer from "../Footer"
+import 'react-calendar/dist/Calendar.css';
+import dayjs from "dayjs";
 
 import { useEffect, useState, useContext } from "react";
 import TokenContext from '../../contexts/TokenContext';
 import { Link } from "react-router-dom";
-
+import Calendar from 'react-calendar'
+import axios from "axios";
 
 const HistoricContainer = styled.div`
     display: flex;
@@ -13,6 +16,9 @@ const HistoricContainer = styled.div`
     min-height: 100vh;
     background: #F2F2F2;
     padding: 70px 20px 120px 20px;
+    font-size: 17.976px;
+    line-height: 22px;
+    color: #666666;
 `
 const NotLoggued = styled.div`
     font-size: 17px;
@@ -30,8 +36,77 @@ const NotLoggued = styled.div`
     }
 `
 
+const Title = styled.h1`
+    font-size: 22.976px;
+    line-height: 29px;
+    color: #126BA5;
+    padding-top: 28px;
+    padding-bottom: 17px;
+`
+const DayFormat = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: black;
+    background-color: ${props => props.color};
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+`    
+    
+
 export default function Historic() {
     const { token } = useContext(TokenContext);
+    const [historic, setHistoric] = useState([]);
+
+    useEffect(() => {
+        if (token) {
+            axios.get('https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/history/daily', {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                    }
+                    })
+                    .then(res => {
+                        setHistoric(res.data);
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    })
+        }
+    }, [token])
+
+    console.log(historic);
+
+    const format = (date) => {
+        let color = 'transparent';
+        let done = true;
+        let habits = historic.filter(day => day.day === dayjs(date).format('DD/MM/YYYY'));
+        if (habits.length > 0) {
+            habits.map(habit => {
+                habit.habits.map(habit => {
+                    if (!habit.done) {
+                        done = false;
+                    }
+                })
+            })
+            
+            if(dayjs(date).format('DD/MM/YYYY') === dayjs().format('DD/MM/YYYY')){
+                color = 'transparent';
+            }else if (done) {
+                color = '228b22';
+            } else if (!done) {
+                color = '#ff4040';
+            }
+        }
+        return (
+            <DayFormat color={color}>
+                {dayjs(date).format("DD")}
+            </DayFormat>
+        )
+    }
+
+
     return (
         <>
             <Header />
@@ -44,11 +119,22 @@ export default function Historic() {
 
                     :
                     <HistoricContainer>
-                        <h1>Historic</h1>
-                        <p>Aqui você pode criar e gerenciar seus hábitos.</p>
+                        <Title>Historico</Title>
+                        {
+                            historic.length === 0
+                                ?
+                                <p>Em breve você poderá ver o histórico dos seus hábitos aqui!</p>
+                                :
+                                <Calendar
+                                    calendarType="US"
+                                    formatDay={(locale, date) => format(date)}
+                                />
+                        }
                     </HistoricContainer>
 
             }
+
+
             <Footer />
         </>
     )
