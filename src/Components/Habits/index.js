@@ -204,7 +204,7 @@ const DaysToRequest = (props) => {
 
 
 export default function Habits() {
-    const { register, formState: { errors }, handleSubmit } = useForm({
+    const { register, formState: { errors }, handleSubmit, reset } = useForm({
         criteriaMode: "all"
     });
 
@@ -316,12 +316,12 @@ export default function Habits() {
             })
                 .then(response => {
                     setHabits([...habits, response.data]);
-                    setAddHabit(false);
-                    setIsSubmitting(false);
                     setHabit({
                         name: "",
                         days: []
                     });
+                    setAddHabit(false);
+                    setIsSubmitting(false);
                     toast.success('Habito criado com sucesso!', {
                         position: "top-right",
                         autoClose: 2000,
@@ -331,9 +331,11 @@ export default function Habits() {
                         draggable: true,
                         progress: undefined,
                     });
+                    reset()
                 })
                 .catch(error => {
-                    toast.error(error, {
+                    setIsSubmitting(false);
+                    toast.error('Algo deu errado, tente novamente', {
                         position: "top-right",
                         autoClose: 2000,
                         hideProgressBar: false,
