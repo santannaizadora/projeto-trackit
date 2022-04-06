@@ -95,7 +95,7 @@ export default function Historic() {
             if (dayjs(date).format('DD/MM/YYYY') === dayjs().format('DD/MM/YYYY')) {
                 color = 'transparent';
             } else if (done) {
-                color = '228b22';
+                color = '#228b22';
             } else if (!done) {
                 color = '#ff4040';
             }

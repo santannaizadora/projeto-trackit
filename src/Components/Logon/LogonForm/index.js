@@ -98,7 +98,7 @@ export default function LogonForm(props) {
     return (
         <>
             <ToastContainer />
-            <Form onSubmit={handleSubmit(onSubmit)}>
+            <Form onSubmit={handleSubmit(onSubmit)} autoComplete='off'>
                 <Input
                     {...register("email", {
                         required: "O campo e-mail é obrigatório",

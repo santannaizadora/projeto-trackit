@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useContext } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 import LoginForm from './LoginForm';
 import LogoTrackIt from '../assets/img/logo-trackit.png';
+
+import TokenContext from '../../contexts/TokenContext';
 
 const Container = styled.div`
     display: flex;
@@ -39,14 +41,19 @@ const Logon = styled.p`
     }
 `
 export default function Login() {
+    const { token } = useContext(TokenContext);
+    const navigation = useNavigate();
     const [formData, setFormData] = useState({
         email: '',
         password: ''
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
 
+    token !=='' && navigation('/hoje');
+
+
     return (
-        <Container>
+            <Container>
             <Logo src={LogoTrackIt} alt="Logo" />
             <LogoText>TrackIt</LogoText>
             <LoginForm

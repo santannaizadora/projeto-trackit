@@ -366,7 +366,7 @@ export default function Habits() {
                             addHabit
                             &&
                             <HabitForm>
-                                <form onSubmit={handleSubmit(onSubmit)}>
+                                <form onSubmit={handleSubmit(onSubmit)} autoComplete='off'>
                                     <Input
                                         {...register("name", {
                                             required: "O campo nome é obrigatório",
